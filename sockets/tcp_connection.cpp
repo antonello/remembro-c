@@ -46,28 +46,37 @@ void tcp_connection::handle_write(const boost::system::error_code& /*error*/,
 {
 }
 
-void tcp_connection::handle_send_back(const boost::array<char, 128> buf, const boost::system::error_code& error, std::size_t len)
+void tcp_connection::handle_send_back(const boost::system::error_code& error, std::size_t len)
   {
 	std::cout << "Q4\n";
     if (!error)
     {
-    	std::cout << buf.data() << " aaaa " << len << "\n";
-    	async_write(socket_, boost::asio::buffer(buf, len), boost::bind(&tcp_connection::handle_write, shared_from_this(),
-    				boost::asio::placeholders::error,
-    				boost::asio::placeholders::bytes_transferred));
-    	//handle_read();
+    	if (buf.data()[0] != '|') {
+    		std::cout << "NO " << buf.data()[0] << "\n";
+    		message += buf.data()[0];
+    		std::cout << "NO " << message << "\n";
+    	}
+    	else {
+    		std::cout << "SI " << buf.data()[0] << "\n";
+    		std::cout << buf.data()[0] << "\n";
+    		std::cout << message << " |aaaa| " << len << "\n";
+    		    	async_write(socket_, boost::asio::buffer(message, message.length()), boost::bind(&tcp_connection::handle_write, shared_from_this(),
+    		    				boost::asio::placeholders::error,
+    		    				boost::asio::placeholders::bytes_transferred));
+    	}
+
+    	handle_read();
     }
     else
     {
-
+    	std::cout << error << '\n';
     }
 
   }
 
 void tcp_connection::handle_read()
 {
-	boost::array<char, 128> buf;
 	boost::system::error_code error;
 	async_read(socket_, boost::asio::buffer(buf), boost::bind(&tcp_connection::handle_send_back, shared_from_this(),
-			buf, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+			boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 }

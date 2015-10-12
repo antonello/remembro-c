@@ -15,6 +15,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
+#include <string>
 
 using boost::asio::ip::tcp;
 
@@ -36,11 +37,13 @@ private:
   void handle_write(const boost::system::error_code& /*error*/,
       size_t /*bytes_transferred*/);
 
-  void handle_send_back(const boost::array<char, 128> buf, const boost::system::error_code& error, const std::size_t len);
+  void handle_send_back(const boost::system::error_code& error, const std::size_t len);
   void handle_read();
 
   tcp::socket socket_;
   std::string message_;
+  boost::array<char, 1> buf;
+  std::string message = "";
 };
 
 
