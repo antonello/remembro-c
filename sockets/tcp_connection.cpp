@@ -12,7 +12,7 @@
 
 using boost::asio::ip::tcp;
 
-typedef boost::shared_ptr<tcp_connection> pointer;
+tcp_connection::tcp_connection() : message(std::string()) { }
 
 pointer tcp_connection::create(boost::asio::io_service& io_service)
 {
