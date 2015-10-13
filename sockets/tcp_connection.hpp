@@ -25,6 +25,8 @@ class tcp_connection
 public:
   typedef boost::shared_ptr<tcp_connection> pointer;
 
+  tcp_connection();
+  
   static pointer create(boost::asio::io_service& io_service);
 
   tcp::socket& socket();
